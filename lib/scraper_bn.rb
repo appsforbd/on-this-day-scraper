@@ -5,8 +5,8 @@ require 'json'
 
 def scrap
   result = {}
-  (1..12).each do |month_index|
-    (1..31).each do |day_index|
+  (1..1).each do |month_index|
+    (1..1).each do |day_index|
       begin
         day, month = form_date(day_index, month_index)
 
@@ -32,15 +32,15 @@ def form_date(day_index, month_index)
 end
 
 def extract_from(day, month)
-  html = Nokogiri::HTML open("https://en.wikipedia.org/wiki/#{month}_#{day}")
+  html = Nokogiri::HTML open("https://bn.wikipedia.org/wiki/#{month}_#{day}")
 
   description = html.css('#mw-content-text p')
                     .map(&:text)
                     .find { |text| text.include?("#{month} #{day}") }
 
-  events = parse_ul html.css('#Events')[0].parent.next_element
-  births = parse_ul html.css('#Births')[0].parent.next_element
-  deaths = parse_ul html.css('#Deaths')[0].parent.next_element
+  events = parse_ul html.css('#.E0.A6.98.E0.A6.9F.E0.A6.A8.E0.A6.BE.E0.A6.AC.E0.A6.B2.E0.A7.80')[0].parent.next_element
+  births = parse_ul html.css('#.E0.A6.9C.E0.A6.A8.E0.A7.8D.E0.A6.AE.E0.A6.A6.E0.A6.BF.E0.A6.A8')[0].parent.next_element
+  deaths = parse_ul html.css('#.E0.A6.AE.E0.A7.83.E0.A6.A4.E0.A7.8D.E0.A6.AF.E0.A7.81.E0.A6.A6.E0.A6.BF.E0.A6.A8')[0].parent.next_element
 
   [description, events, births, deaths]
 end
@@ -53,8 +53,8 @@ def parse_ul(ul)
 end
 
 def export_to_file(hash_data)
-  File.write('episodes.json', hash_data.to_json)
-  puts 'Results stored in episodes.json'
+  File.write('episodes_bn.json', hash_data.to_json)
+  puts 'Results stored in episodes_bn.json'
 end
 
 scrap
