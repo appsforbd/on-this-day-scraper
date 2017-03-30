@@ -47,8 +47,8 @@ end
 
 def parse_ul(ul)
   ul.css('li').map do |li|
-    year, *text = li.text.split(' – ')
-    { year: year, data: text.join(' – ') }
+    year, *text = li.text.split(' - ')
+    { year: year, data: text.join(' - ') }
   end
 end
 
