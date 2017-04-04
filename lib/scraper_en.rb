@@ -2,7 +2,6 @@ require 'open-uri'
 require 'nokogiri'
 require 'date'
 require 'json'
-require 'certified'
 
 def scrap
   result = {}
@@ -33,7 +32,8 @@ def form_date(day_index, month_index)
 end
 
 def extract_from(day, month)
-  html = Nokogiri::HTML open("https://en.wikipedia.org/wiki/#{month}_#{day}")
+  wikilink = URI.encode("https://en.wikipedia.org/wiki/#{month}_#{day}}")
+  html = Nokogiri::HTML open(wikilink)
 
   description = html.css('#mw-content-text p')
                     .map(&:text)
