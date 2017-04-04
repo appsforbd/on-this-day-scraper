@@ -5,8 +5,8 @@ require 'json'
 
 def scrap
   result = {}
-  (1..3).each do |month_index|
-    (1..1).each do |day_index|
+  (1..12).each do |month_index|
+    (1..31).each do |day_index|
       begin
         day, month = form_date(day_index, month_index)
 
@@ -32,11 +32,12 @@ def form_date(day_index, month_index)
 end
 
 def extract_from(day, month)
-  html = Nokogiri::HTML open("https://bn.wikipedia.org/wiki/#{month}_#{day}")
+  wikilink = URI.encode("https://bn.wikipedia.org/wiki/#{month}_#{day}")
+  html = Nokogiri::HTML open(wikilink)
 
   description = html.css('#mw-content-text p')
                     .map(&:text)
-                    .find { |text| text.include?("জানুয়ারি") || text.include?("ফেব্রুয়ারি") || text.include?("মার্চ") }
+                    .find { |text| text.include?("জানুয়ারি ") || text.include?("ফেব্রুয়ারি ") || text.include?("মার্চ ") || text.include?("এপ্রিল ") || text.include?("মে ") || text.include?("জুন ") || text.include?("জুলাই ") || text.include?("আগস্ট ") || text.include?("সেপ্টেম্বর ") || text.include?("অক্টোবর ") || text.include?("নভেম্বর ") || text.include?("ডিসেম্বর ") }
 
   events = parse_ul html.css('#mw-content-text.mw-content-ltr ul')[1]
   births = parse_ul html.css('#mw-content-text.mw-content-ltr ul')[2]
@@ -47,8 +48,8 @@ end
 
 def parse_ul(ul)
   ul.css('li').map do |li|
-    year, *text = li.text.split(' - ')
-    { year: year, data: text.join(' - ') }
+    year, *text = li.text.split(/[-–]/).map(&:strip)
+    { year: year, data: text.join('-') }
   end
 end
 
